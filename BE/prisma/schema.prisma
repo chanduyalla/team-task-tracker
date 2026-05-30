@@ -1,0 +1,192 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  rolePermissions RolePermission[]
+  users           User[]
+
+  @@map("roles")
+}
+
+model Resource {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  rolePermissions RolePermission[]
+
+  @@map("resources")
+}
+
+model Permission {
+  id     Int    @id @default(autoincrement())
+  action String @unique
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  id Int @id @default(autoincrement())
+
+  role_id       Int
+  resource_id   Int
+  permission_id Int
+
+  updated_at DateTime @updatedAt
+  updated_by Int?
+
+  role       Role       @relation(fields: [role_id], references: [id])
+  resource   Resource   @relation(fields: [resource_id], references: [id])
+  permission Permission @relation(fields: [permission_id], references: [id])
+  updatedBy  User?      @relation(fields: [updated_by], references: [id])
+
+  @@unique([role_id, resource_id, permission_id])
+  @@map("role_permissions")
+}
+
+model User {
+  id         Int    @id @default(autoincrement())
+  first_name String
+  last_name  String
+  email      String @unique
+  password   String
+
+  role_id Int
+
+  created_at DateTime  @default(now())
+  created_by Int?
+  updated_at DateTime  @updatedAt
+  updated_by Int?
+  deleted_at DateTime?
+  deleted_by Int?
+
+  role Role @relation(fields: [role_id], references: [id])
+
+  rolePermissions   RolePermission[]
+  createdProjects   Project[]          @relation("ProjectCreatedBy")
+  updatedProjects   Project[]          @relation("ProjectUpdatedBy")
+  deletedProjects   Project[]          @relation("ProjectDeletedBy")
+  createdTasks      Task[]             @relation("TaskCreatedBy")
+  updatedTasks      Task[]             @relation("TaskUpdatedBy")
+  deletedTasks      Task[]             @relation("TaskDeletedBy")
+  assignedTasks     Task[]             @relation("TaskAssignee")
+  projectMembers    ProjectMember[]
+  managedProjects   Project[]          @relation("ProjectManager")
+  userRefreshTokens UserRefreshToken[]
+  createdBy         User?              @relation("UserCreatedBy", fields: [created_by], references: [id])
+  updatedBy         User?              @relation("UserUpdatedBy", fields: [updated_by], references: [id])
+  deletedBy         User?              @relation("UserDeletedBy", fields: [deleted_by], references: [id])
+  createdUsers      User[]             @relation("UserCreatedBy")
+  updatedUsers      User[]             @relation("UserUpdatedBy")
+  deletedUsers      User[]             @relation("UserDeletedBy")
+
+  @@map("users")
+}
+
+model UserRefreshToken {
+  id            Int       @id @default(autoincrement())
+  user_id       Int
+  refresh_token String    @unique
+  expires_at    DateTime
+  created_at    DateTime  @default(now())
+  revoked       Boolean
+  revoked_at    DateTime?
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("user_refresh_tokens")
+}
+
+model Project {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+
+  manager_id Int?
+
+  created_at DateTime  @default(now())
+  created_by Int
+  updated_at DateTime  @updatedAt
+  updated_by Int?
+  deleted_at DateTime?
+  deleted_by Int?
+
+  manager User? @relation("ProjectManager", fields: [manager_id], references: [id])
+
+  createdBy      User            @relation("ProjectCreatedBy", fields: [created_by], references: [id])
+  updatedBy      User?           @relation("ProjectUpdatedBy", fields: [updated_by], references: [id])
+  deletedBy      User?           @relation("ProjectDeletedBy", fields: [deleted_by], references: [id])
+  tasks          Task[]
+  projectMembers ProjectMember[]
+
+  @@map("projects")
+}
+
+model ProjectMember {
+  id         Int @id @default(autoincrement())
+  project_id Int
+  user_id    Int
+
+  created_at DateTime @default(now())
+
+  project Project @relation(fields: [project_id], references: [id])
+  user    User    @relation(fields: [user_id], references: [id])
+
+  @@unique([project_id, user_id])
+  @@map("project_members")
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+  BLOCKED
+}
+
+model Task {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String
+  priority    TaskPriority @default(MEDIUM)
+  status      TaskStatus   @default(TODO)
+  assignee    Int?
+  due_date    DateTime?
+  project_id  Int?
+
+  created_at DateTime  @default(now())
+  created_by Int
+  updated_at DateTime  @updatedAt
+  updated_by Int?
+  deleted_at DateTime?
+  deleted_by Int?
+
+  project    Project? @relation(fields: [project_id], references: [id])
+  assignedTo User?    @relation("TaskAssignee", fields: [assignee], references: [id])
+
+  createdBy User  @relation("TaskCreatedBy", fields: [created_by], references: [id])
+  updatedBy User? @relation("TaskUpdatedBy", fields: [updated_by], references: [id])
+  deletedBy User? @relation("TaskDeletedBy", fields: [deleted_by], references: [id])
+
+  @@map("tasks")
+}
