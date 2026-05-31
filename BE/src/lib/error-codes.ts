@@ -60,4 +60,12 @@ export const errorCodes = {
     statusCode: 400,
     errorMessage: "Invalid IDS",
   },
+  NO_REFRESH_TOKEN: {
+    statusCode: 401,
+    errorMessage: "No refresh token found",
+  },
+  INVALID_REFRESH_TOKEN: {
+    statusCode: 401,
+    message: "Invalid refresh token",
+  },
 };

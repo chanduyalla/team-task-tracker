@@ -13,12 +13,18 @@ import {
   createTaskValidationSChema,
   deleteTaskValidationSchema,
   getTaskByIdValidationSchema,
+  getTasksValidationSchema,
   updateTaskValidationSChema,
 } from "../../validations/taskValidation.js";
 
 const router = Router();
 
-router.get("/", checkPermission("TASKS", "READ"), getTasks);
+router.get(
+  "/",
+  checkPermission("TASKS", "READ"),
+  validateRequest(getTasksValidationSchema),
+  getTasks,
+);
 
 router.get(
   "/:id",

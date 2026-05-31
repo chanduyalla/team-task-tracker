@@ -1,6 +1,23 @@
 import { TaskPriority, TaskStatus } from "@prisma/client";
 import Joi from "joi";
 
+export const getTasksValidationSchema = {
+  query: Joi.object({
+    offset: Joi.number().optional(),
+    limit: Joi.number().optional(),
+    sortBy: Joi.string().optional(),
+    sortDirection: Joi.string().optional(),
+    projectId: Joi.number().optional(),
+    status: Joi.string()
+      .optional()
+      .valid(...Object.values(TaskStatus)),
+    priority: Joi.string()
+      .optional()
+      .valid(...Object.values(TaskPriority)),
+    assignee: Joi.string().optional(),
+  }),
+};
+
 export const getTaskByIdValidationSchema = {
   params: Joi.object({
     id: Joi.number().required(),

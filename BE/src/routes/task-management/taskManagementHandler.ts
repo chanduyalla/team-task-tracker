@@ -54,7 +54,8 @@ export const deleteTask = async (req: Request, res: Response) => {
 
 export const assignTaskToMember = async (req: Request, res: Response) => {
   try {
-    const result = await taskManagementController.assignTask(req);
+    const response = await taskManagementController.assignTask(req);
+    customResponse(200, response, res);
   } catch (error) {
     sendErrorResponse(error, res);
   }

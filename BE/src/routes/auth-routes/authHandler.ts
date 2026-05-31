@@ -24,3 +24,12 @@ export const getRefreshToken = async (req: Request, res: Response) => {
     sendErrorResponse(error, res);
   }
 };
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    const response = await authController.logout(req);
+    customResponse(200, response, res);
+  } catch (error) {
+    sendErrorResponse(error, res);
+  }
+};

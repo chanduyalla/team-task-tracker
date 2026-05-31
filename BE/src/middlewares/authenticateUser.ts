@@ -9,13 +9,23 @@ export const authenticateUser = (
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).json({ message: "auth header is missing" });
+    return res.status(404).json({
+      success: false,
+      status: 404,
+      code: "AUTH_HEADER_MISSING",
+      message: "auth header is missing",
+    });
   }
 
   const token = authHeader.split(" ")[1];
 
   if (!token) {
-    res.status(404).json({ message: "token is missing" });
+    res.status(404).json({
+      success: false,
+      status: 404,
+      code: "TOKEN_MISSING",
+      message: "token is missing",
+    });
   }
 
   if (!process.env.JWT_SECRET) {
@@ -31,6 +41,11 @@ export const authenticateUser = (
     req.currentUser = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Invalid or expired token" });
+    return res.status(401).json({
+      success: false,
+      status: 401,
+      code: "TOKEN_EXPIRED",
+      message: "Invalid or expired token",
+    });
   }
 };

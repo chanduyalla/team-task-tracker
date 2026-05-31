@@ -8,7 +8,18 @@ class AuthController {
     try {
       const user = await prisma.user.findUnique({
         where: { email: req.body.email },
-        include: { role: true },
+        include: {
+          role: {
+            include: {
+              rolePermissions: {
+                include: {
+                  resource: true,
+                  permission: true,
+                },
+              },
+            },
+          },
+        },
       });
       if (!user) {
         throw new Error("USER_NOT_FOUND");
@@ -30,10 +41,33 @@ class AuthController {
           revoked: false,
         },
       });
+      const userPermissions = user.role.rolePermissions.reduce(
+        (acc: any, rp: any) => {
+          const resource = rp.resource.name;
+          const permission = rp.permission.action;
+
+          if (!acc[resource]) {
+            acc[resource] = [];
+          }
+
+          acc[resource].push(permission);
+
+          return acc;
+        },
+        {},
+      );
       return {
         message: "successfully logined",
         accessToken,
         refreshToken,
+        user: {
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          role: user.role.name,
+          permissions: userPermissions,
+        },
       };
     } catch (error) {
       throw error;
@@ -43,7 +77,7 @@ class AuthController {
     const token = req.body.refreshToken;
 
     if (!token) {
-      throw new Error("No refresh token");
+      throw new Error("NO_REFRESH_TOKEN");
     }
 
     const storedToken = await prisma.userRefreshToken.findUnique({
@@ -52,12 +86,12 @@ class AuthController {
     });
 
     if (!storedToken || storedToken.revoked) {
-      throw new Error("Invalid refresh token");
+      throw new Error("INVALID_REFRESH_TOKEN");
     }
 
     await prisma.userRefreshToken.update({
       where: { refresh_token: token },
-      data: { revoked: true },
+      data: { revoked: true, revoked_at: new Date() },
     });
 
     const newAccessToken = generateAccessToken(storedToken.user);
@@ -76,6 +110,29 @@ class AuthController {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
     };
+  };
+
+  logout = async (req: Request) => {
+    const token = req.body.refreshToken;
+
+    if (!token) {
+      throw new Error("NO_REFRESH_TOKEN");
+    }
+
+    const storedToken = await prisma.userRefreshToken.findUnique({
+      where: { refresh_token: token },
+    });
+
+    if (!storedToken) {
+      throw new Error("INVALID_REFRESH_TOKEN");
+    }
+
+    await prisma.userRefreshToken.update({
+      where: { refresh_token: token },
+      data: { revoked: true, revoked_at: new Date() },
+    });
+
+    return { message: "Logged out successfully" };
   };
 }
 

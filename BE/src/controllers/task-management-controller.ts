@@ -12,6 +12,15 @@ class TaskManagementController {
       if (req.query.projectId) {
         whereCondition.projectId = Number(req.query.projectId);
       }
+      if (req.query.status) {
+        whereCondition.status = req.query.status;
+      }
+      if (req.query.priority) {
+        whereCondition.priority = req.query.priority;
+      }
+      if (req.query.assignee) {
+        whereCondition.assignee = Number(req.query.assignee);
+      }
       const limit = Number(req.query.limit) || 10;
       const offset = Number(req.query.offset) || 0;
       const sortBy: any = req.query.sortBy || "updated_at";
@@ -188,7 +197,7 @@ class TaskManagementController {
         throw new Error("INVALID_ASSIGNEE_ID");
       }
       const task = await prisma.task.findUnique({
-        where: { id: taskId },
+        where: { id: taskId, deleted_at: null, deleted_by: null },
       });
 
       if (!task) {
