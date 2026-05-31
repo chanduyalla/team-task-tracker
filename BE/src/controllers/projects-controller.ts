@@ -43,7 +43,7 @@ class ProjectsController {
   async createProject(req: Request) {
     try {
       const data = {
-        name: req.body.title,
+        name: req.body.name,
         description: req.body.description,
         created_by: req.currentUser.id,
       };
@@ -119,8 +119,8 @@ class ProjectsController {
 
   async addUsertoProject(req: Request) {
     try {
-      const projectId = Number(req.body.project_id);
-      const userId = Number(req.body.user_id);
+      const projectId = Number(req.params.id);
+      const userId = Number(req.body.userId);
 
       if (isNaN(projectId) || isNaN(userId)) {
         throw new Error("INVALID_IDS");

@@ -4,6 +4,7 @@ import seedRoles from "./data-seeds/1-roles.js";
 import seedResources from "./data-seeds/2-resources.js";
 import seedPermissions from "./data-seeds/3-permissions.js";
 import seedRolePermissions from "./data-seeds/4-role-permissions.js";
+import seedAdminUser from "./data-seeds/5-add-admin-user.js";
 
 async function runSeeds() {
   //   const seedDir = path.join(process.cwd(), "build", "seeders", "data-seeds");
@@ -24,6 +25,7 @@ async function runSeeds() {
   await seedResources();
   await seedPermissions();
   await seedRolePermissions();
+  await seedAdminUser();
 }
 
 runSeeds();

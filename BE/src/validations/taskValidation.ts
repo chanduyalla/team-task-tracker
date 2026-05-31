@@ -35,6 +35,11 @@ export const createTaskValidationSChema = {
       .optional()
       .valid(...Object.keys(TaskStatus)),
     dueDate: Joi.date().optional().greater("now"),
+    timezone: Joi.when("dueDate", {
+      is: Joi.exist(),
+      then: Joi.string().required(),
+      otherwise: Joi.string().optional(),
+    }),
   }),
 };
 
@@ -48,6 +53,11 @@ export const updateTaskValidationSChema = {
     priority: Joi.string().optional(),
     status: Joi.string().optional(),
     dueDate: Joi.date().greater("now"),
+    timezone: Joi.when("dueDate", {
+      is: Joi.exist(),
+      then: Joi.string().required(),
+      otherwise: Joi.string().optional(),
+    }),
     assignee: Joi.number().optional(),
   }),
 };

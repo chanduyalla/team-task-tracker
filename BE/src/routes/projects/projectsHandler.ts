@@ -51,3 +51,12 @@ export const deleteProject = async (req: Request, res: Response) => {
     sendErrorResponse(error, res);
   }
 };
+
+export const addUsertoProject = async (req: Request, res: Response) => {
+  try {
+    const result = await projectsController.addUsertoProject(req);
+    customResponse(201, result, res);
+  } catch (error) {
+    sendErrorResponse(error, res);
+  }
+};

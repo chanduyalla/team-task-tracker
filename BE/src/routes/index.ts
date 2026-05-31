@@ -4,6 +4,7 @@ import authRoutes from "./auth-routes/index.js";
 import userRoutes from "./users/index.js";
 import projectRoutes from "./projects/index.js";
 import taskRoutes from "./task-management/index.js";
+import analyticsRoutes from "./analytics/index.js";
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.use(authenticateUser);
 router.use("/users", userRoutes);
 router.use("/projects", projectRoutes);
 router.use("/tasks", taskRoutes);
+router.use("/analytics", analyticsRoutes);
 
 export default router;

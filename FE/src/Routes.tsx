@@ -5,6 +5,8 @@ import { routes } from "./constant/routes";
 import Home from "./components/home";
 import MainLayout from "./components/main-layout";
 import Tasks from "./components/tasks";
+import Users from "./components/users";
+import Projects from "./components/projects";
 
 const AppRoutes = () => {
   return (
@@ -15,8 +17,8 @@ const AppRoutes = () => {
         <Route element={<MainLayout />}>
           <Route path={routes.HOME} element={<Home />} />
           <Route path={routes.TASKS} element={<Tasks />} />
-          <Route path={routes.USERS} />
-          <Route path={routes.PROJECTS} />
+          <Route path={routes.USERS} element={<Users />} />
+          <Route path={routes.PROJECTS} element={<Projects />} />
         </Route>
       </Routes>
     </BrowserRouter>

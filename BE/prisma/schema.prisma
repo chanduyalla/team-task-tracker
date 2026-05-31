@@ -168,14 +168,16 @@ enum TaskStatus {
 }
 
 model Task {
-  id          Int          @id @default(autoincrement())
-  title       String
-  description String
-  priority    TaskPriority @default(MEDIUM)
-  status      TaskStatus   @default(TODO)
-  assignee    Int?
-  due_date    DateTime?
-  project_id  Int?
+  id           Int          @id @default(autoincrement())
+  title        String
+  description  String
+  priority     TaskPriority @default(MEDIUM)
+  status       TaskStatus   @default(TODO)
+  assignee     Int?
+  due_date     DateTime?
+  project_id   Int?
+  started_at   DateTime?
+  completed_at DateTime?
 
   created_at DateTime  @default(now())
   created_by Int
@@ -191,5 +193,9 @@ model Task {
   updatedBy User? @relation("TaskUpdatedBy", fields: [updated_by], references: [id])
   deletedBy User? @relation("TaskDeletedBy", fields: [deleted_by], references: [id])
 
+  @@index([status])
+  @@index([assignee])
+  @@index([due_date])
+  @@index([priority])
   @@map("tasks")
 }

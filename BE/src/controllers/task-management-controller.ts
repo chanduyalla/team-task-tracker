@@ -1,6 +1,8 @@
 import type { Request } from "express";
 import { prisma } from "../prismaClient.js";
 import { TASK_TRANSITIONS } from "../lib/constant.js";
+import moment from "moment-timezone";
+import type { TaskStatus } from "@prisma/client";
 
 class TaskManagementController {
   async fetchTasks(req: Request) {
@@ -103,7 +105,9 @@ class TaskManagementController {
         description: req.body.description,
         priority: req.body.priority,
         status: req.body.status,
-        due_date: req.body.dueDate,
+        due_date: req.body.dueDate
+          ? moment.tz(req.body.dueDate, req.body.timezone).utc().toDate()
+          : null,
         created_by: req.currentUser.id,
       };
       const newTask = await prisma.task.create({ data });
@@ -129,11 +133,23 @@ class TaskManagementController {
       }
 
       if (
-        req.currentUser.role === "MEMBER" &&
+        req.body.status &&
+        req.currentUser.role !== "MANAGER" &&
         task.assignee !== req.currentUser.id
       ) {
-        throw new Error("TASK_NOT_ASSIGNED_TO_YOU");
+        throw new Error("ONLY_ASSIGNEE_OR_MANAGER_CAN_CHANGE_STATUS");
       }
+
+      if (req.body.status && req.body.status !== task.status) {
+        const allowedTransitions = (TASK_TRANSITIONS[task.status] ||
+          []) as string[];
+        if (!allowedTransitions.includes(req.body.status)) {
+          throw new Error(
+            `INVALID_STATUS_TRANSITION: from ${task.status} to ${req.body.status}`,
+          );
+        }
+      }
+
       const updateData: any = {};
 
       if (req.body.title) updateData.title = req.body.title;
@@ -141,7 +157,11 @@ class TaskManagementController {
       if (req.body.priority) updateData.priority = req.body.priority;
       if (req.body.status) updateData.status = req.body.status;
       if (req.body.assignee) updateData.assignee = req.body.assignee;
-      if (req.body.dueDate) updateData.due_date = req.body.dueDate;
+      if (req.body.dueDate)
+        updateData.due_date = moment
+          .tz(req.body.dueDate, req.body.timezone)
+          .utc()
+          .toDate();
 
       updateData.updated_by = req.currentUser.id;
 

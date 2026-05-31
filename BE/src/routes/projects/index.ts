@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  addUsertoProject,
   createProject,
   deleteProject,
   getPeojects,
@@ -46,5 +47,7 @@ router.delete(
   validateRequest(deleteProjectValidationSchema),
   deleteProject,
 );
+
+router.post("/:id/add-member", addUsertoProject);
 
 export default router;

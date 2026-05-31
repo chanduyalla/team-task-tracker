@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Table from "./common/table";
 import { getTasks } from "../api/task";
+import moment from "moment-timezone";
 
 const Tasks = () => {
   const [data, setData] = useState([]);
@@ -44,7 +45,8 @@ const Tasks = () => {
     {
       label: "Due Date",
       key: "due_date",
-      render: (row: any) => row.due_date || "-",
+      render: (row: any) =>
+        row.due_date ? moment(row.due_date).local().format("DD-MM-YYYY") : "-",
     },
   ];
   useEffect(() => {

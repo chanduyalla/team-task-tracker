@@ -2,7 +2,13 @@ export const ROLE_LIST = ["ADMIN", "MANAGER", "MEMBER"];
 
 export const RESOURCE_LIST = ["USERS", "PROJECTS", "TASKS"];
 
-export const PERMISSION_LIST = ["READ", "CREATE", "UPDATE", "DELETE"];
+export const PERMISSION_LIST = [
+  "READ",
+  "CREATE",
+  "UPDATE",
+  "DELETE",
+  "ANALYTICS",
+];
 
 export const TASK_TRANSITIONS = {
   TODO: ["IN_PROGRESS", "BLOCKED"],

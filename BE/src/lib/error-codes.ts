@@ -68,4 +68,8 @@ export const errorCodes = {
     statusCode: 401,
     errorMessage: "Invalid refresh token",
   },
+  ONLY_ASSIGNEE_OR_MANAGER_CAN_CHANGE_STATUS: {
+    statusCode: 403,
+    errorMessage: "Only the assignee or a MANAGER can advance a task's statu",
+  },
 };
