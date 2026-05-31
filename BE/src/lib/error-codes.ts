@@ -66,6 +66,6 @@ export const errorCodes = {
   },
   INVALID_REFRESH_TOKEN: {
     statusCode: 401,
-    message: "Invalid refresh token",
+    errorMessage: "Invalid refresh token",
   },
 };
