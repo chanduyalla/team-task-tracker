@@ -21,6 +21,15 @@ class AuthController {
 
       const accessToken = generateAccessToken(user);
       const refreshToken = generateRefreshToken(user);
+
+      await prisma.userRefreshToken.create({
+        data: {
+          refresh_token: refreshToken,
+          user_id: user.id,
+          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          revoked: false,
+        },
+      });
       return {
         message: "successfully logined",
         accessToken,
@@ -31,7 +40,7 @@ class AuthController {
     }
   };
   refreshToken = async (req: Request) => {
-    const token = req.cookies.refreshToken;
+    const token = req.body.refreshToken;
 
     if (!token) {
       throw new Error("No refresh token");

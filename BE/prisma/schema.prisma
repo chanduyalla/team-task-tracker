@@ -59,11 +59,12 @@ model RolePermission {
 }
 
 model User {
-  id         Int    @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   first_name String
   last_name  String
-  email      String @unique
+  email      String  @unique
   password   String
+  is_active  Boolean @default(true)
 
   role_id Int
 
@@ -112,9 +113,10 @@ model UserRefreshToken {
 }
 
 model Project {
-  id          Int    @id @default(autoincrement())
-  name        String @unique
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
   description String
+  is_active   Boolean @default(true)
 
   manager_id Int?
 
@@ -137,9 +139,10 @@ model Project {
 }
 
 model ProjectMember {
-  id         Int @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   project_id Int
   user_id    Int
+  is_active  Boolean @default(true)
 
   created_at DateTime @default(now())
 

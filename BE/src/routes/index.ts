@@ -13,7 +13,7 @@ router.get("/ping", (req, res) => {
 
 router.use("/auth", authRoutes);
 
-// router.use(authenticateUser);
+router.use(authenticateUser);
 router.use("/users", userRoutes);
 router.use("/projects", projectRoutes);
 router.use("/tasks", taskRoutes);

@@ -5,7 +5,7 @@ import { createUser } from "../users/usersHandler.js";
 const router = Router();
 
 router.post("/register", createUser);
-router.post("login", Login);
+router.post("/login", Login);
 router.post("/refresh", getRefreshToken);
 
 export default router;

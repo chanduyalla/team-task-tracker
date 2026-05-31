@@ -37,7 +37,7 @@ export const createTask = async (req: Request, res: Response) => {
 export const updateTask = async (req: Request, res: Response) => {
   try {
     const response = await taskManagementController.updateTask(req);
-    customResponse(201, response, res);
+    customResponse(200, response, res);
   } catch (error) {
     sendErrorResponse(error, res);
   }
@@ -46,7 +46,15 @@ export const updateTask = async (req: Request, res: Response) => {
 export const deleteTask = async (req: Request, res: Response) => {
   try {
     const response = await taskManagementController.deleteTask(req);
-    customResponse(201, response, res);
+    customResponse(200, response, res);
+  } catch (error) {
+    sendErrorResponse(error, res);
+  }
+};
+
+export const assignTaskToMember = async (req: Request, res: Response) => {
+  try {
+    const result = await taskManagementController.assignTask(req);
   } catch (error) {
     sendErrorResponse(error, res);
   }

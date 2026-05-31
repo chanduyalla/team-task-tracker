@@ -37,7 +37,7 @@ export const createProject = async (req: Request, res: Response) => {
 export const updateProject = async (req: Request, res: Response) => {
   try {
     const result = await projectsController.updateProject(req);
-    customResponse(201, result, res);
+    customResponse(200, result, res);
   } catch (error) {
     sendErrorResponse(error, res);
   }
@@ -46,7 +46,7 @@ export const updateProject = async (req: Request, res: Response) => {
 export const deleteProject = async (req: Request, res: Response) => {
   try {
     const result = await projectsController.deleteProject(req);
-    customResponse(201, result, res);
+    customResponse(200, result, res);
   } catch (error) {
     sendErrorResponse(error, res);
   }
