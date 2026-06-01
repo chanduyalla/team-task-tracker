@@ -16,6 +16,8 @@ A backend application for Team Task Tracker, providing a comprehensive solution 
 - **ProjectMember**: Many-to-many relationship between users and projects, allowing multiple users to participate in multiple projects.
 - **UserRefreshToken**: Stores refresh tokens for JWT authentication.
 
+- schema design link: https://drive.google.com/file/d/17c_PEo3jd5-3f57nrrZDE6sA--ghN0H6/view?usp=sharing
+
 ## Design Decision
 
 ### Role-Based Access Control (RBAC)
@@ -84,7 +86,7 @@ A backend application for Team Task Tracker, providing a comprehensive solution 
 
 ## Postman Collection
 
-- Access the collection at:
+- Access the collection at: https://drive.google.com/file/d/1kyXaeWTJEikUf7Ona3tQv9PkYqJxXBYB/view?usp=sharing
 
 ---
 

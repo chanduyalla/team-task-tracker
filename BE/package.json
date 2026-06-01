@@ -10,7 +10,7 @@
     "build": "npm run prisma:generate && tsc && copyfiles -u 1 src/seeders/csv/* build/",
     "dev": "npm run build && nodemon build/index.js",
     "start": "node build/index.js",
-    "migrate":"prisma migrate dev"
+    "migrate": "prisma migrate dev"
   },
   "keywords": [],
   "author": "",

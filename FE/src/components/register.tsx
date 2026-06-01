@@ -1,6 +1,37 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { register } from "../api/auth";
+import { routes } from "../constant/routes";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const initialValues = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
+  const validationSchema = Yup.object().shape({
+    firstName: Yup.string().required(),
+    lastName: Yup.string().required(),
+    email: Yup.string().required(),
+    password: Yup.string().required(),
+    confirmPassword: Yup.string()
+      .required()
+      .oneOf([Yup.ref("password")], "Passwords must match"),
+  });
+
+  const handleSubmit = async (values: any) => {
+    try {
+      const { confirmPassword, ...registerData } = values;
+      await register(registerData);
+      navigate(routes.LOGIN);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="mt-5">
       <h1 style={{ color: "#52ab98" }}>Team Task Tracker </h1>
@@ -11,66 +42,92 @@ const Register = () => {
         <h3 className="mb-4" style={{ color: "#2b6777" }}>
           Registration
         </h3>
-        <form>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="First Name"
-            //   {...details.getFieldProps("firstname")}
-          ></input>
-          <span style={{ color: "red" }}>
-            {/* {details.touched.firstname && details.errors.firstname} */}
-          </span>
-          <input
-            type="text"
-            className="form-control mt-3"
-            placeholder="Last Name"
-            //   {...details.getFieldProps("lastname")}
-          ></input>
-          <span style={{ color: "red" }}>
-            {/* {details.touched.lastname && details.errors.lastname} */}
-          </span>
-          <span style={{ color: "red" }}>
-            {/* {details.touched.username && details.errors.username} */}
-          </span>
-          <input
-            type="email"
-            placeholder="Enter Email "
-            className="form-control mt-3"
-            //   {...details.getFieldProps("email")}
-          ></input>
-          <span style={{ color: "red" }}>
-            {/* {details.touched.email && details.errors.email} */}
-          </span>
-          <input
-            type="password"
-            placeholder="Password "
-            className="form-control mt-3"
-            //   {...details.getFieldProps("password")}
-          ></input>
-          <span style={{ color: "red" }}>
-            {/* {details.touched.password && details.errors.password} */}
-          </span>
-          <input
-            type="password"
-            placeholder="Confirm-Password "
-            className="form-control mt-3"
-            //   {...details.getFieldProps("confirmpassword")}
-          ></input>
-          <span style={{ color: "red" }}>
-            {/* {details.touched.confirmpassword && details.errors.confirmpassword} */}
-          </span>
-          <br />
-          <button
-            className="mb-4 btn"
-            style={{ backgroundColor: "#2b6777", color: "white" }}
-          >
-            Register
-          </button>
-          <br />
-          <span>Already Have an Account? </span>
-          <Link to="/">Login</Link>
-        </form>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ values, handleChange }) => (
+            <Form>
+              <Field
+                name="firstName"
+                type="text"
+                className="form-control"
+                placeholder="First Name"
+                onChange={handleChange}
+                value={values.firstName}
+              ></Field>
+              <ErrorMessage
+                name="firstName"
+                component="div"
+                className="text-danger"
+              />
+              <Field
+                name="lastName"
+                type="text"
+                className="form-control mt-3"
+                placeholder="Last Name"
+                onChange={handleChange}
+                value={values.lastName}
+              ></Field>
+              <ErrorMessage
+                name="lastName"
+                component="div"
+                className="text-danger"
+              />
+              <Field
+                name="email"
+                type="email"
+                placeholder="Enter Email "
+                className="form-control mt-3"
+                onChange={handleChange}
+                value={values.email}
+              ></Field>
+              <ErrorMessage
+                name="email"
+                component="div"
+                className="text-danger"
+              />
+              <Field
+                name="password"
+                type="password"
+                placeholder="Password "
+                className="form-control mt-3"
+                onChange={handleChange}
+                value={values.password}
+              ></Field>
+              <ErrorMessage
+                name="password"
+                component="div"
+                className="text-danger"
+              />
+              <Field
+                name="confirmPassword"
+                type="password"
+                placeholder="Confirm-Password "
+                className="form-control mt-3"
+                onChange={handleChange}
+                value={values.confirmPassword}
+              ></Field>
+              <ErrorMessage
+                name="confirmPassword"
+                component="div"
+                className="text-danger"
+              />
+              <br />
+              <button
+                type="submit"
+                className="mb-4 btn"
+                style={{ backgroundColor: "#2b6777", color: "white" }}
+              >
+                Register
+              </button>
+              <br />
+              <span>Already Have an Account? </span>
+              <Link to="/">Login</Link>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );

@@ -72,4 +72,8 @@ export const errorCodes = {
     statusCode: 403,
     errorMessage: "Only the assignee or a MANAGER can advance a task's statu",
   },
+  USER_ALREADY_EXISTS_WITH_THIS_EMAIL: {
+    statusCode: 409,
+    errorMessage: "A user with this email already exists",
+  },
 };

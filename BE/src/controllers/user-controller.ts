@@ -65,6 +65,18 @@ class UserController {
 
   async createUser(req: Request) {
     try {
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          email: {
+            equals: req.body.email,
+            mode: "insensitive",
+          },
+        },
+      });
+
+      if (existingUser) {
+        throw new Error("USER_ALREADY_EXISTS_WITH_THIS_EMAIL");
+      }
       const role = await prisma.role.findUnique({
         where: { name: req?.body?.role || "MEMBER" },
       });
@@ -118,6 +130,10 @@ class UserController {
 
       if (!user) {
         throw new Error("USER_NOT_FOUND");
+      }
+
+      if (req.body.email && user.email === req.body.email) {
+        throw new Error("USER_ALREADY_EXISTS_WITH_THIS_EMAIL");
       }
 
       const updateData: any = {};
